@@ -17,14 +17,17 @@ Setup:
 ---------------------------
 1.Launch EC2 instacne with Ubuntu 22.04 version
 
+<img width="1918" height="843" alt="image" src="https://github.com/user-attachments/assets/ef6c7271-6443-4c70-9449-5752ebd4a197" />
+
 2.Installed Docker Engine with Ubuntu OS
 
-3.Clone Git Repository https://github.com/mohanDevOps-arch/Microservices-Task.git
+3.Clone Git Repository ** https://github.com/mohanDevOps-arch/Microservices-Task.git**
 
 4.Navigate to each services folder 
     cd MicroServices-Task/Microservices for 4 services  ( User-Service,Product-service,Gateway-Service,Orders-Service)
     
 5.Create Docker file for 4 services with respective port ( User-Service :3000 ,Product-service:3001 ,Gateway-Service:3003,Orders-Service:3002)
+
       FROM node:20-slim
       WORKDIR /app
       COPY package*.json ./
@@ -98,16 +101,20 @@ Setup:
 
 Gateway Service:
 -----------------------------------
-Gateway health :
+**Gateway health :**
+
 <img width="1167" height="251" alt="gateway_health" src="https://github.com/user-attachments/assets/08ee962e-783d-4003-aaab-00b8578c7ae2" />
 
-Gateway users:
+**Gateway users:**
+
 <img width="710" height="242" alt="gateway_users" src="https://github.com/user-attachments/assets/e0bcd386-b3f5-4e4c-a59f-3765942594bf" />
 
-Gateway products:
+**Gateway products:**
+
 <img width="828" height="307" alt="gateway_products" src="https://github.com/user-attachments/assets/2d74cde6-cfc0-4bc8-a96f-9d135ce6d4d0" />
 
-Gateway orders:
+**Gateway orders:**
+
 <img width="693" height="268" alt="gateway_orders" src="https://github.com/user-attachments/assets/a258df90-c764-4d4f-99e9-74e42c51264a" />
 
 User Service:
