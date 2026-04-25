@@ -1,25 +1,46 @@
-version: '3.8'
+version: "3.9"
+
 services:
   user-service:
-    build: ./user-service
+    build:
+      context: ./user-service
+    container_name: user_service
     ports:
       - "3000:3000"
+    networks:
+      - app-network
 
   product-service:
-    build: ./product-service
+    build:
+      context: ./product-service
+    container_name: product_service
     ports:
       - "3001:3001"
+    networks:
+      - app-network
 
   order-service:
-    build: ./order-service
+    build:
+      context: ./order-service
+    container_name: order_service
     ports:
       - "3002:3002"
+    networks:
+      - app-network
 
   gateway-service:
-    build: ./gateway-service
+    build:
+      context: ./gateway-service
+    container_name: gateway_service
     ports:
       - "3003:3003"
     depends_on:
       - user-service
       - product-service
       - order-service
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
