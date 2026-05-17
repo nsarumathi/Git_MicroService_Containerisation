@@ -5,6 +5,7 @@ services:
     build:
       context: ./user-service
     container_name: user_service
+    image: user-service:latest
     ports:
       - "3000:3000"
     networks:
@@ -14,6 +15,7 @@ services:
     build:
       context: ./product-service
     container_name: product_service
+    image: product-service:latest
     ports:
       - "3001:3001"
     networks:
@@ -23,6 +25,7 @@ services:
     build:
       context: ./order-service
     container_name: order_service
+    image: order-service:latest
     ports:
       - "3002:3002"
     networks:
@@ -32,6 +35,7 @@ services:
     build:
       context: ./gateway-service
     container_name: gateway_service
+    image: gateway-service:latest
     ports:
       - "3003:3003"
     depends_on:
