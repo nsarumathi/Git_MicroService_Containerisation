@@ -16,6 +16,9 @@ spec:
         app: gateway-service
 
     spec:
+      imagePullSecrets:
+      - name: ecr-secret
+      
       containers:
       - name: gateway-service
         image: 944765969321.dkr.ecr.ap-south-2.amazonaws.com/gateway-service:latest

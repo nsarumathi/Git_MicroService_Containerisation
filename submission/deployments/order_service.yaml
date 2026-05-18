@@ -16,6 +16,9 @@ spec:
         app: order-service
 
     spec:
+      imagePullSecrets:
+      - name: ecr-secret
+      
       containers:
       - name: order-service
         image: 944765969321.dkr.ecr.ap-south-2.amazonaws.com/order-service:latest
