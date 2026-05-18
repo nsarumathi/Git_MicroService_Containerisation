@@ -24,7 +24,7 @@ spec:
         image: 944765969321.dkr.ecr.ap-south-2.amazonaws.com/gateway-service:latest
 
         ports:
-        - containerPort: 8080
+        - containerPort: 3000
 
         env:
         - name: USER_SERVICE
@@ -48,13 +48,13 @@ spec:
         livenessProbe:
           httpGet:
             path: /
-            port: 8080
+            port: 3000
           initialDelaySeconds: 15
           periodSeconds: 10
 
         readinessProbe:
           httpGet:
             path: /
-            port: 8080
+            port: 3000
           initialDelaySeconds: 5
           periodSeconds: 5
