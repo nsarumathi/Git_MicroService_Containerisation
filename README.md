@@ -4,6 +4,17 @@ Overview:
 ---------------------------------------
 This document provides details on setup & testing various services after running the docker-compose file. These services include User, Product, Order, and Gateway Services. Each service has its own endpoints for testing purposes.
 
+---
+# Sections:
+
+A. Local Containerization Using Docker Compose (Without Jenkins)
+B. Containerization with Jenkins CI/CD & Kubernetes Deployment
+
+---
+## Compartment 1: Local Containerization Using Docker Compose (Without Jenkins)
+
+This section covers manual setup, Dockerfile creation, and multi-container orchestration using Docker Compose on an AWS EC2 instance.
+
 Services and Endpoints:
 ----------------------------------------
 
@@ -13,7 +24,7 @@ Services and Endpoints:
 
 <img width="429" height="97" alt="image" src="https://github.com/user-attachments/assets/63bf976d-3154-459d-92f4-9b4c3280d0fa" />
 
-Setup:
+Environmental Setup:
 ---------------------------
 1.Launch EC2 instacne with Ubuntu 22.04 version
 
@@ -129,7 +140,112 @@ Orders Service:
 ---------------------------------------
 <img width="980" height="310" alt="orders_list" src="https://github.com/user-attachments/assets/b8dd9498-1ae4-4262-86ef-0163123f657b" />
 
+---
+## Compartment 2: Containerization with Jenkins CI/CD & Kubernetes Deployment
 
+This section details the automated CI/CD pipeline implementation using Jenkins, pushing images to a container registry, and orchestrating the microservices using Kubernetes (K8s).
+
+Services:
+----------
+<img width="999" height="73" alt="image" src="https://github.com/user-attachments/assets/90eb92e7-4cc6-406b-b334-1b7d800048ed" />
+
+<img width="525" height="97" alt="image" src="https://github.com/user-attachments/assets/5d36003a-66a5-41d2-bfa1-fe492ea3cc57" />
+
+
+Environmental Setup:
+---------------------------
+1.Docker & Jenkins Server Setup
+
+  a.Install Docker
+  b.Install Jenkins
+  c. Enable Jenkins
+  <img width="1700" height="880" alt="Jenkins" src="https://github.com/user-attachments/assets/4ab6ea28-e005-4471-9369-b6583b360e5f" />
+
+
+2.CI/CD Pipeline Job 
+
+   a.Configure jenkins Job (to push images to ECR using jenkinsfile)
+   <img width="1702" height="960" alt="JobConfig" src="https://github.com/user-attachments/assets/6cd61d99-8655-46c1-ba0b-5ef8324b6f7b" />
+   <img width="1918" height="877" alt="Job_success" src="https://github.com/user-attachments/assets/bc4084c9-dadc-4f53-b668-affa503eca97" />
+
+   b.Add Github WEbhook
+   <img width="1388" height="578" alt="image" src="https://github.com/user-attachments/assets/3dc8a6b0-74bd-4b75-9910-6ec05f4ae30c" />
+
+
+3.ECR Setup:
+  a.Create private ecr repo for 4 services
+  <img width="1918" height="602" alt="ECR_AfterDocker" src="https://github.com/user-attachments/assets/f451551b-49ba-4a80-9a8f-e6e3274ab426" />
+
+  b.once build is successful:
+  <img width="1918" height="467" alt="ECR_Bfr" src="https://github.com/user-attachments/assets/d4f39938-9168-46d2-b040-591a3e521016" />
+
+
+4.Kubernetes & Minikube setup
+
+a.Install k8s
+    curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.29.0/2024-01-04/bin/linux/amd64/kubectl
+    chmod +x ./kubectl
+    sudo mv ./kubectl /usr/local/bin
+    kubectl version --client
+b.Install Minikube
+    curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+    sudo install minikube-linux-amd64 /usr/local/bin/minikube
+    rm minikube-linux-amd64
+    minikube version
+c.Start Minikube by providing docker daemon access to ubuntu user
+    sudo usermod -aG docker $USER
+    newgrp docker
+    minikube start
+d.Add ingress on cluster 
+    minikube addons enable ingress
+    <img width="1918" height="782" alt="K8S_MinikubeInstall" src="https://github.com/user-attachments/assets/677d000f-f104-43f0-b444-e50f68292008" />
+<img width="1918" height="782" alt="K8S_MinikubeInstall" src="https://github.com/user-attachments/assets/fa4d4ceb-2f7c-47af-85f3-94a3428a989e" />
+
+
+5.Create kubernetes manifest as per submission folder & apply it
+    **
+    submission/
+    ├── deployments/
+    │   ├── user-service.yaml
+    │   ├── product-service.yaml
+    │   ├── order-service.yaml
+    │   └── gateway-service.yaml
+    ├── services/
+    │   ├── user-service.yaml
+    │   ├── product-service.yaml
+    │   ├── order-service.yaml
+    │   └── gateway-service.yaml
+    ├── ingress.yaml  
+    **
+
+a. To access private ECR
+        kubectl create secret docker-registry ecr-secret \
+          --docker-server=944765969321.dkr.ecr.ap-south-2.amazonaws.com \
+          --docker-username=AWS \
+          --docker-password=$(aws ecr get-login-password --region ap-south-2)
+        
+        kubectl get secret ecr-secret
+   <img width="1087" height="786" alt="Deploy_files" src="https://github.com/user-attachments/assets/e9f36075-3b09-426a-8fbd-581ca3fa1024" />
+
+b. Deploy application
+
+    kubectl apply -f deployments/
+    kubectl apply -f service/
+    kubectl apply -f ingress.yaml
+    kubectl get all
+    
+<img width="771" height="813" alt="deploy_verify" src="https://github.com/user-attachments/assets/a8673525-b95f-4b74-baa3-234047485846" />
+
+6.Cluster-Internal testing
+
+    kubectl run alpine-test --rm -it --image=alpine -- sh  
+    # 1. Update packages and install curl
+            apk add --no-cache curl   
+    # 2. Test your internal services & gateway services inside cluster
+    
+<img width="1071" height="796" alt="Testing_Internal" src="https://github.com/user-attachments/assets/d07f8d3d-e63b-427a-b95d-f55181350234" />
+
+7.Ingress Testing
 
 
 
