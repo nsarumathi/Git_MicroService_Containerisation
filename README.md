@@ -8,7 +8,8 @@ This document provides details on setup & testing various services after running
 # Sections:
 
 A. Local Containerization Using Docker Compose (Without Jenkins)
-B. Containerization with Jenkins CI/CD & Kubernetes Deployment
+
+B. Jenkins CI/CD with Kubernetes Deployment
 
 ---
 ## Compartment 1: Local Containerization Using Docker Compose (Without Jenkins)
@@ -141,9 +142,9 @@ Orders Service:
 <img width="980" height="310" alt="orders_list" src="https://github.com/user-attachments/assets/b8dd9498-1ae4-4262-86ef-0163123f657b" />
 
 ---
-## Compartment 2: Containerization with Jenkins CI/CD & Kubernetes Deployment
+## Compartment 2: Jenkins CI/CD with Kubernetes Deployment
 
-This section details the automated CI/CD pipeline implementation using Jenkins, pushing images to a container registry, and orchestrating the microservices using Kubernetes (K8s).
+This section details the automated CI/CD pipeline implementation using Jenkins, pushing images to a container registry, and orchestrating the microservices using Kubernetes (K8s) minikube.
 
 Services:
 ----------
@@ -151,14 +152,13 @@ Services:
 
 <img width="525" height="97" alt="image" src="https://github.com/user-attachments/assets/5d36003a-66a5-41d2-bfa1-fe492ea3cc57" />
 
-
 Environmental Setup:
 ---------------------------
 1.Docker & Jenkins Server Setup
 
   a.Install Docker
   b.Install Jenkins
-  c. Enable Jenkins
+  c.Enable Jenkins
   <img width="1700" height="880" alt="Jenkins" src="https://github.com/user-attachments/assets/4ab6ea28-e005-4471-9369-b6583b360e5f" />
 
 
@@ -173,6 +173,7 @@ Environmental Setup:
 
 
 3.ECR Setup:
+
   a.Create private ecr repo for 4 services
   <img width="1918" height="602" alt="ECR_AfterDocker" src="https://github.com/user-attachments/assets/f451551b-49ba-4a80-9a8f-e6e3274ab426" />
 
@@ -183,26 +184,34 @@ Environmental Setup:
 4.Kubernetes & Minikube setup
 
 a.Install k8s
+
     curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.29.0/2024-01-04/bin/linux/amd64/kubectl
     chmod +x ./kubectl
     sudo mv ./kubectl /usr/local/bin
     kubectl version --client
+    
 b.Install Minikube
+
     curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
     sudo install minikube-linux-amd64 /usr/local/bin/minikube
     rm minikube-linux-amd64
     minikube version
+    
 c.Start Minikube by providing docker daemon access to ubuntu user
+
     sudo usermod -aG docker $USER
     newgrp docker
     minikube start
+    
 d.Add ingress on cluster 
+
     minikube addons enable ingress
-    <img width="1918" height="782" alt="K8S_MinikubeInstall" src="https://github.com/user-attachments/assets/677d000f-f104-43f0-b444-e50f68292008" />
+<img width="1918" height="782" alt="K8S_MinikubeInstall" src="https://github.com/user-attachments/assets/677d000f-f104-43f0-b444-e50f68292008" />
 <img width="1918" height="782" alt="K8S_MinikubeInstall" src="https://github.com/user-attachments/assets/fa4d4ceb-2f7c-47af-85f3-94a3428a989e" />
 
 
 5.Create kubernetes manifest as per submission folder & apply it
+
     **
     submission/
     ├── deployments/
@@ -247,7 +256,27 @@ b. Deploy application
 
 7.Ingress Testing
 
+  a.Enable ingress :
+  
+    kubectl get ingress
+    kubectl addon list | grep ingress
+    addons enable ingress
+    kubectl get pods -n ingress-nginx
+    kubectl get svc -n ingress-nginx
+    kubectl describe ingress microservices-ingress
+    minikube ip
+    
+<img width="1011" height="786" alt="Enbale_ingress" src="https://github.com/user-attachments/assets/8ddd85a9-ee04-45ef-b7e0-10ceadba0004" />
 
+
+  b.Internal testing
+   
+    curl -H "Host: microservices.local" http://192.168.49.2:30293/health
+    curl -H "Host: microservices.local" http://192.168.49.2:30293/api/users
+    curl -H "Host: microservices.local" http://192.168.49.2:30293/api/orders
+    curl -H "Host: microservices.local" http://192.168.49.2:30293/api/products
+
+<img width="1250" height="797" alt="ingress_testing" src="https://github.com/user-attachments/assets/630ed2bc-67c5-48f1-bd26-fc80f5ca9a09" />
 
 
 
