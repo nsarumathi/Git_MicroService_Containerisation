@@ -27,6 +27,9 @@ spec:
         - containerPort: 3003
 
         env:
+        - name: PORT
+          value: "3003"
+
         - name: USER_SERVICE
           value: "http://user-service:3000"
 
@@ -47,14 +50,14 @@ spec:
 
         livenessProbe:
           httpGet:
-            path: /
+            path: /health
             port: 3003
           initialDelaySeconds: 15
           periodSeconds: 10
 
         readinessProbe:
           httpGet:
-            path: /
+            path: /health
             port: 3003
           initialDelaySeconds: 5
           periodSeconds: 5
